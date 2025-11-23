@@ -27,27 +27,34 @@ jobs:
     - name: Display project structure
       run: |
         echo "=== Project Structure ==="
-        ls -la
-        echo "=== Folder Contents ==="
-        for folder in circle rectangle square triangle; do
-          if [ -d "$folder" ]; then
-            echo "$folder/:"
-            ls -la "$folder/" || echo "Cannot list $folder"
-          else
-            echo "$folder/ - NOT FOUND"
-          fi
-        done
+        dir
+        echo "=== Checking folders ==="
+        python -c "
+        import os
+        folders = ['circle', 'rectangle', 'square', 'triangle']
+        for folder in folders:
+            if os.path.exists(folder):
+                print(f'{folder}/ exists:')
+                for item in os.listdir(folder):
+                    print(f'  {item}')
+            else:
+                print(f'{folder}/ - NOT FOUND')
+        "
     
     - name: Create __init__.py files
       run: |
-        for folder in circle rectangle square triangle; do
-          if [ -d "$folder" ]; then
-            touch "$folder/__init__.py"
-            echo "Created $folder/__init__.py"
-          fi
-        done
+        python -c "
+        import os
+        folders = ['circle', 'rectangle', 'square', 'triangle']
+        for folder in folders:
+            if os.path.exists(folder):
+                init_file = os.path.join(folder, '__init__.py')
+                with open(init_file, 'w') as f:
+                    f.write('# Init file')
+                print(f'Created {init_file}')
+        "
     
-    - name: Run Python tests (simple approach)
+    - name: Run Python tests
       run: |
         python -c "
         import sys
@@ -55,7 +62,7 @@ jobs:
         
         print('=== Testing Shapes ===')
         
-        # Test Circle - импортируем напрямую из файла
+        # Test Circle
         print('1. Testing Circle:')
         try:
             sys.path.insert(0, 'circle')
