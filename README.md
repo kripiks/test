@@ -25,5 +25,7 @@ import math
 from geometry import *
 
 # Примеры:
-circle_area = area(5)        # Площадь круга радиусом 5
-rect_perimeter = perimeter(4, 6)  # Периметр прямоугольника 4x6
+- circle_area = area(5)        
+# Площадь круга радиусом 5
+- rect_perimeter = perimeter(4, 6)  
+# Периметр прямоугольника 4x6
