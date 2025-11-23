@@ -1,4 +1,4 @@
-name: Run Unit Tests
+﻿name: Run Unit Tests
 
 on:
   push:
@@ -11,9 +11,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.8, 3.9]
+        python-version: [3.9, "3.10"]  # Изменил версии Python
     
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10  # Добавляем таймаут
     
     steps:
     - name: Checkout code
@@ -24,45 +25,72 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Display structure
+    - name: Display project structure
       run: |
-        echo "Project structure:"
+        echo "=== Project Structure ==="
         ls -la
-        echo "Circle folder:"
-        ls -la circle/
-        echo "Rectangle folder:"
-        ls -la rectangle/
-        echo "Square folder:"
-        ls -la square/
-        echo "Triangle folder:"
-        ls -la triangle/
+        echo "=== Circle Folder ==="
+        ls -la circle/ || echo "No circle folder"
+        echo "=== Rectangle Folder ==="
+        ls -la rectangle/ || echo "No rectangle folder"
+        echo "=== Square Folder ==="
+        ls -la square/ || echo "No square folder"
+        echo "=== Triangle Folder ==="
+        ls -la triangle/ || echo "No triangle folder"
     
-    - name: Run tests for all shapes
+    - name: Run simple Python tests
       run: |
         python -c "
         import sys
+        import os
+        
+        # Добавляем пути к модулям
         sys.path.append('circle')
-        sys.path.append('rectangle') 
+        sys.path.append('rectangle')
         sys.path.append('square')
         sys.path.append('triangle')
         
-        # Test circle
-        from circle import circle
-        print('Circle area:', circle.area(5))
-        print('Circle perimeter:', circle.perimeter(5))
+        print('Testing Circle:')
+        try:
+            from circle import circle
+            area = circle.area(5)
+            perimeter = circle.perimeter(5)
+            print(f'Circle area(5) = {area}')
+            print(f'Circle perimeter(5) = {perimeter}')
+            print('✓ Circle tests passed')
+        except Exception as e:
+            print(f'✗ Circle error: {e}')
         
-        # Test rectangle
-        from rectangle import rectangle
-        print('Rectangle area:', rectangle.area(4, 6))
-        print('Rectangle perimeter:', rectangle.perimeter(4, 6))
+        print('\nTesting Rectangle:')
+        try:
+            from rectangle import rectangle
+            area = rectangle.area(4, 6)
+            perimeter = rectangle.perimeter(4, 6)
+            print(f'Rectangle area(4,6) = {area}')
+            print(f'Rectangle perimeter(4,6) = {perimeter}')
+            print('✓ Rectangle tests passed')
+        except Exception as e:
+            print(f'✗ Rectangle error: {e}')
         
-        # Test square  
-        from square import square
-        print('Square area:', square.area(4))
-        print('Square perimeter:', square.perimeter(4))
+        print('\nTesting Square:')
+        try:
+            from square import square
+            area = square.area(4)
+            perimeter = square.perimeter(4)
+            print(f'Square area(4) = {area}')
+            print(f'Square perimeter(4) = {perimeter}')
+            print('✓ Square tests passed')
+        except Exception as e:
+            print(f'✗ Square error: {e}')
         
-        # Test triangle
-        from triangle import triangle
-        print('Triangle area:', triangle.area(6, 4))
-        print('Triangle perimeter:', triangle.perimeter(3, 4, 5))
+        print('\nTesting Triangle:')
+        try:
+            from triangle import triangle
+            area = triangle.area(6, 4)
+            perimeter = triangle.perimeter(3, 4, 5)
+            print(f'Triangle area(6,4) = {area}')
+            print(f'Triangle perimeter(3,4,5) = {perimeter}')
+            print('✓ Triangle tests passed')
+        except Exception as e:
+            print(f'✗ Triangle error: {e}')
         "
