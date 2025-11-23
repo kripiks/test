@@ -11,34 +11,46 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.9, "3.10"]  # Изменил версии Python
     
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10  # Добавляем таймаут
+    timeout-minutes: 10
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.9'
     
     - name: Display project structure
       run: |
         echo "=== Project Structure ==="
-        ls -la
-        echo "=== Circle Folder ==="
-        ls -la circle/ || echo "No circle folder"
-        echo "=== Rectangle Folder ==="
-        ls -la rectangle/ || echo "No rectangle folder"
-        echo "=== Square Folder ==="
-        ls -la square/ || echo "No square folder"
-        echo "=== Triangle Folder ==="
-        ls -la triangle/ || echo "No triangle folder"
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          ls -la
+          echo "=== Circle Folder ==="
+          ls -la circle/ || echo "No circle folder"
+          echo "=== Rectangle Folder ==="
+          ls -la rectangle/ || echo "No rectangle folder"
+          echo "=== Square Folder ==="
+          ls -la square/ || echo "No square folder"
+          echo "=== Triangle Folder ==="
+          ls -la triangle/ || echo "No triangle folder"
+        else
+          # Windows commands
+          dir
+          echo "=== Circle Folder ==="
+          dir circle || echo "No circle folder"
+          echo "=== Rectangle Folder ==="
+          dir rectangle || echo "No rectangle folder"
+          echo "=== Square Folder ==="
+          dir square || echo "No square folder"
+          echo "=== Triangle Folder ==="
+          dir triangle || echo "No triangle folder"
+        fi
     
-    - name: Run simple Python tests
+    - name: Run Python tests
       run: |
         python -c "
         import sys
@@ -50,47 +62,51 @@ jobs:
         sys.path.append('square')
         sys.path.append('triangle')
         
-        print('Testing Circle:')
+        print('=== Testing Shapes ===')
+        
+        print('1. Testing Circle:')
         try:
             from circle import circle
             area = circle.area(5)
             perimeter = circle.perimeter(5)
-            print(f'Circle area(5) = {area}')
-            print(f'Circle perimeter(5) = {perimeter}')
-            print('✓ Circle tests passed')
+            print(f'   Circle area(5) = {area}')
+            print(f'   Circle perimeter(5) = {perimeter}')
+            print('   ✓ Circle tests passed')
         except Exception as e:
-            print(f'✗ Circle error: {e}')
+            print(f'   ✗ Circle error: {e}')
         
-        print('\nTesting Rectangle:')
+        print('2. Testing Rectangle:')
         try:
             from rectangle import rectangle
             area = rectangle.area(4, 6)
             perimeter = rectangle.perimeter(4, 6)
-            print(f'Rectangle area(4,6) = {area}')
-            print(f'Rectangle perimeter(4,6) = {perimeter}')
-            print('✓ Rectangle tests passed')
+            print(f'   Rectangle area(4,6) = {area}')
+            print(f'   Rectangle perimeter(4,6) = {perimeter}')
+            print('   ✓ Rectangle tests passed')
         except Exception as e:
-            print(f'✗ Rectangle error: {e}')
+            print(f'   ✗ Rectangle error: {e}')
         
-        print('\nTesting Square:')
+        print('3. Testing Square:')
         try:
             from square import square
             area = square.area(4)
             perimeter = square.perimeter(4)
-            print(f'Square area(4) = {area}')
-            print(f'Square perimeter(4) = {perimeter}')
-            print('✓ Square tests passed')
+            print(f'   Square area(4) = {area}')
+            print(f'   Square perimeter(4) = {perimeter}')
+            print('   ✓ Square tests passed')
         except Exception as e:
-            print(f'✗ Square error: {e}')
+            print(f'   ✗ Square error: {e}')
         
-        print('\nTesting Triangle:')
+        print('4. Testing Triangle:')
         try:
             from triangle import triangle
             area = triangle.area(6, 4)
             perimeter = triangle.perimeter(3, 4, 5)
-            print(f'Triangle area(6,4) = {area}')
-            print(f'Triangle perimeter(3,4,5) = {perimeter}')
-            print('✓ Triangle tests passed')
+            print(f'   Triangle area(6,4) = {area}')
+            print(f'   Triangle perimeter(3,4,5) = {perimeter}')
+            print('   ✓ Triangle tests passed')
         except Exception as e:
-            print(f'✗ Triangle error: {e}')
+            print(f'   ✗ Triangle error: {e}')
+            
+        print('=== All tests completed ===')
         "
