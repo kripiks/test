@@ -1,0 +1,68 @@
+name: Run Unit Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: [3.8, 3.9]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Display structure
+      run: |
+        echo "Project structure:"
+        ls -la
+        echo "Circle folder:"
+        ls -la circle/
+        echo "Rectangle folder:"
+        ls -la rectangle/
+        echo "Square folder:"
+        ls -la square/
+        echo "Triangle folder:"
+        ls -la triangle/
+    
+    - name: Run tests for all shapes
+      run: |
+        python -c "
+        import sys
+        sys.path.append('circle')
+        sys.path.append('rectangle') 
+        sys.path.append('square')
+        sys.path.append('triangle')
+        
+        # Test circle
+        from circle import circle
+        print('Circle area:', circle.area(5))
+        print('Circle perimeter:', circle.perimeter(5))
+        
+        # Test rectangle
+        from rectangle import rectangle
+        print('Rectangle area:', rectangle.area(4, 6))
+        print('Rectangle perimeter:', rectangle.perimeter(4, 6))
+        
+        # Test square  
+        from square import square
+        print('Square area:', square.area(4))
+        print('Square perimeter:', square.perimeter(4))
+        
+        # Test triangle
+        from triangle import triangle
+        print('Triangle area:', triangle.area(6, 4))
+        print('Triangle perimeter:', triangle.perimeter(3, 4, 5))
+        "
