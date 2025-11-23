@@ -24,31 +24,33 @@ jobs:
       with:
         python-version: '3.9'
     
-    - name: Display project structure
+    - name: Display project structure (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         echo "=== Project Structure ==="
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          ls -la
-          echo "=== Circle Folder ==="
-          ls -la circle/ || echo "No circle folder"
-          echo "=== Rectangle Folder ==="
-          ls -la rectangle/ || echo "No rectangle folder"
-          echo "=== Square Folder ==="
-          ls -la square/ || echo "No square folder"
-          echo "=== Triangle Folder ==="
-          ls -la triangle/ || echo "No triangle folder"
-        else
-          # Windows commands
-          dir
-          echo "=== Circle Folder ==="
-          dir circle || echo "No circle folder"
-          echo "=== Rectangle Folder ==="
-          dir rectangle || echo "No rectangle folder"
-          echo "=== Square Folder ==="
-          dir square || echo "No square folder"
-          echo "=== Triangle Folder ==="
-          dir triangle || echo "No triangle folder"
-        fi
+        ls -la
+        echo "=== Circle Folder ==="
+        ls -la circle/ || echo "No circle folder"
+        echo "=== Rectangle Folder ==="
+        ls -la rectangle/ || echo "No rectangle folder"
+        echo "=== Square Folder ==="
+        ls -la square/ || echo "No square folder"
+        echo "=== Triangle Folder ==="
+        ls -la triangle/ || echo "No triangle folder"
+    
+    - name: Display project structure (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        echo "=== Project Structure ==="
+        dir
+        echo "=== Circle Folder ==="
+        dir circle || echo "No circle folder"
+        echo "=== Rectangle Folder ==="
+        dir rectangle || echo "No rectangle folder"
+        echo "=== Square Folder ==="
+        dir square || echo "No square folder"
+        echo "=== Triangle Folder ==="
+        dir triangle || echo "No triangle folder"
     
     - name: Run Python tests
       run: |
@@ -56,14 +58,20 @@ jobs:
         import sys
         import os
         
+        print('Python version:', sys.version)
+        print('Current directory:', os.getcwd())
+        print('Files in current directory:', os.listdir('.'))
+        
         # Добавляем пути к модулям
         sys.path.append('circle')
         sys.path.append('rectangle')
         sys.path.append('square')
         sys.path.append('triangle')
         
+        print('')
         print('=== Testing Shapes ===')
         
+        # Test Circle
         print('1. Testing Circle:')
         try:
             from circle import circle
@@ -74,7 +82,10 @@ jobs:
             print('   ✓ Circle tests passed')
         except Exception as e:
             print(f'   ✗ Circle error: {e}')
+            import traceback
+            traceback.print_exc()
         
+        # Test Rectangle
         print('2. Testing Rectangle:')
         try:
             from rectangle import rectangle
@@ -85,7 +96,10 @@ jobs:
             print('   ✓ Rectangle tests passed')
         except Exception as e:
             print(f'   ✗ Rectangle error: {e}')
+            import traceback
+            traceback.print_exc()
         
+        # Test Square
         print('3. Testing Square:')
         try:
             from square import square
@@ -96,7 +110,10 @@ jobs:
             print('   ✓ Square tests passed')
         except Exception as e:
             print(f'   ✗ Square error: {e}')
+            import traceback
+            traceback.print_exc()
         
+        # Test Triangle
         print('4. Testing Triangle:')
         try:
             from triangle import triangle
@@ -107,6 +124,9 @@ jobs:
             print('   ✓ Triangle tests passed')
         except Exception as e:
             print(f'   ✗ Triangle error: {e}')
+            import traceback
+            traceback.print_exc()
             
+        print('')
         print('=== All tests completed ===')
         "
